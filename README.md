@@ -19,7 +19,6 @@ require:
 "geniv/nette-general-form": ">=1.0.0"
 ```
 
-
 Include in application
 ----------------------
 
