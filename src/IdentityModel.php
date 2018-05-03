@@ -55,16 +55,29 @@ class IdentityModel implements IIdentityModel
      *
      * @return array
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         return $this->columns;
     }
 
 
     /**
+     * Add column.
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function addColumn(string $name)
+    {
+        $this->columns[] = $name;
+        return $this;
+    }
+
+
+    /**
      * Set columns.
      *
-     * @param $columns
+     * @param array $columns
      * @return $this
      * @throws IdentityException
      */
@@ -147,6 +160,13 @@ class IdentityModel implements IIdentityModel
      */
     public function update(int $id, array $values): bool
     {
+        if (isset($values['password'])) {
+            if ($values['password']) {
+                $values['hash'] = $this->getHash($values['password']);  // auto hash password
+            }
+            unset($values['password']);
+        }
+
         $res = (bool) $this->connection->update($this->tableIdentity, $values)->where([self::COLUMN_ID => $id])->execute();
         return $res;
     }
