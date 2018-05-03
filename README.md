@@ -47,3 +47,36 @@ eventsStep1:
 eventsStep2:
     - Identity\Events\ForgottenStep2Event
 ```
+
+model:
+```php
+// usage IIdentityModel
+
+getColumns(): array
+addColumn(string $name)
+setColumns(array $columns)
+
+getList(): Fluent
+getById(int $id)
+getByEmail(string $email)
+
+insert(array $values): int
+update(int $id, array $values): bool
+delete(int $id): bool
+
+getHash(string $password): string
+verifyHash(string $password, string $hash): bool
+
+existLogin(string $login): int
+existEmail(string $email): int
+
+cleanUser(string $validate = null): int
+
+getEncodeHash(int $id, string $login, string $linkValidate): string
+getDecodeHash(string $hash): array
+
+processApprove(string $hash): bool
+
+isValidForgotten(string $hash): bool
+processForgotten(string $hash, string $password): bool
+```

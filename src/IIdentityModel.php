@@ -15,6 +15,33 @@ interface IIdentityModel
 {
 
     /**
+     * Get columns.
+     *
+     * @return array
+     */
+    public function getColumns(): array;
+
+
+    /**
+     * Add column.
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function addColumn(string $name);
+
+
+    /**
+     * Set columns.
+     *
+     * @param array $columns
+     * @return $this
+     * @throws IdentityException
+     */
+    public function setColumns(array $columns);
+
+
+    /**
      * Get list.
      *
      * @return Fluent

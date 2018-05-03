@@ -1,6 +1,6 @@
 {
   "name": "geniv/nette-identity",
-  "description": "Identity extension for Nette Framework",
+  "description": "Identity class for Nette Framework",
   "keywords": [
     "nette",
     "identity",
