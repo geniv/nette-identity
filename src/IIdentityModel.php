@@ -144,12 +144,12 @@ interface IIdentityModel
     /**
      * Get encode hash.
      *
-     * @param int    $id
-     * @param string $login
-     * @param string $linkValidate
+     * @param int         $id
+     * @param string      $login
+     * @param string|null $linkValidate
      * @return string
      */
-    public function getEncodeHash(int $id, string $login, string $linkValidate): string;
+    public function getEncodeHash(int $id, string $login, string $linkValidate = null): string;
 
 
     /**
