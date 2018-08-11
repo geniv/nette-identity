@@ -22,7 +22,8 @@ class IdentityModel implements IIdentityModel
 
     // define constant table names
     const
-        TABLE_NAME = 'identity';
+        TABLE_NAME = 'identity',
+        NO_TIME = 'nostrtotime';
 
     const
         COLUMN_ID = 'id',
@@ -275,14 +276,14 @@ class IdentityModel implements IIdentityModel
     /**
      * Get encode hash.
      *
-     * @param int    $id
-     * @param string $login
-     * @param string $linkValidate
+     * @param int         $id
+     * @param string      $login
+     * @param string|null $linkValidate
      * @return string
      */
-    public function getEncodeHash(int $id, string $login, string $linkValidate): string
+    public function getEncodeHash(int $id, string $login, string $linkValidate = null): string
     {
-        return base64_encode(uniqid(strtotime($linkValidate) . '.', true) . '_' . $this->getHash($id . $login) . '.' . $id);
+        return base64_encode(uniqid(($linkValidate ? strtotime($linkValidate) : self::NO_TIME) . '.', true) . '_' . $this->getHash($id . $login) . '.' . $id);
     }
 
 
@@ -304,6 +305,10 @@ class IdentityModel implements IIdentityModel
         $id = null;
         $verifyHash = null;
         $dateValidate = new DateTime();
+        if ($linkValidate == self::NO_TIME) {
+            // parameter $linkValidate is null -> generate now
+            $linkValidate = strtotime('now');
+        }
         $dateValidate->setTimestamp(intval($linkValidate));  // convert validate int do datetime
         if ($dateValidate >= new DateTime()) {   // check expiration
             $p2 = explode('.', $part2);
@@ -312,7 +317,7 @@ class IdentityModel implements IIdentityModel
         } else {
             throw new IdentityException('Activate link is expired!');
         }
-        return ['id' => $id, 'verifyHash' => $verifyHash];
+        return ['id' => $id, 'verifyHash' => $verifyHash, 'expired' => (int) $linkValidate];
     }
 
 
