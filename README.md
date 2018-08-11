@@ -72,7 +72,7 @@ existEmail(string $email): int
 
 cleanUser(string $validate = null): int
 
-getEncodeHash(int $id, string $login, string $linkValidate): string
+getEncodeHash(int $id, string $login, string $linkValidate = null): string
 getDecodeHash(string $hash): array
 
 processApprove(string $hash): bool
