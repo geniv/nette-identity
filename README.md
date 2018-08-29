@@ -25,7 +25,8 @@ Include in application
 
 neon configure:
 ```neon
-- Identity\IdentityModel(%tablePrefix%)
+services:
+    - Identity\IdentityModel(%tablePrefix%)
 ```
 
 events:
