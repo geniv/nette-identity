@@ -304,13 +304,14 @@ class IdentityModel implements IIdentityModel
 
         $id = null;
         $verifyHash = null;
-        $dateValidate = new DateTime();
+        $dateNow = new DateTime();
+        $dateValidate = $dateNow;
         if ($linkValidate == self::NO_TIME) {
             // parameter $linkValidate is null -> generate now
-            $linkValidate = strtotime('now');
+            $linkValidate = $dateNow->getTimestamp();
         }
-        $dateValidate->setTimestamp(intval($linkValidate));  // convert validate int do datetime
-        if ($dateValidate >= new DateTime()) {   // check expiration
+        $dateValidate->setTimestamp((int) $linkValidate);  // convert validate int do datetime
+        if ($dateValidate >= $dateNow) {   // check expiration
             $p2 = explode('.', $part2);
             $verifyHash = implode('.', array_slice($p2, 0, -1));  // regenerate hash
             $id = $p2[count($p2) - 1];  // get id from last part
