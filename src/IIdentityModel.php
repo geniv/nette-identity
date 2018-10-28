@@ -2,7 +2,7 @@
 
 namespace Identity;
 
-use Dibi\Fluent;
+use Dibi\IDataSource;
 
 
 /**
@@ -44,9 +44,9 @@ interface IIdentityModel
     /**
      * Get list.
      *
-     * @return Fluent
+     * @return IDataSource
      */
-    public function getList(): Fluent;
+    public function getList(): IDataSource;
 
 
     /**
