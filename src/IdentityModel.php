@@ -4,7 +4,7 @@ namespace Identity;
 
 use dibi;
 use Dibi\Connection;
-use Dibi\Fluent;
+use Dibi\IDataSource;
 use Nette\DateTime;
 use Nette\Security\Passwords;
 use Nette\SmartObject;
@@ -96,9 +96,9 @@ class IdentityModel implements IIdentityModel
     /**
      * Get list.
      *
-     * @return Fluent
+     * @return IDataSource
      */
-    public function getList(): Fluent
+    public function getList(): IDataSource
     {
         return $this->connection->select($this->columns)->from($this->tableIdentity);
     }
@@ -277,13 +277,13 @@ class IdentityModel implements IIdentityModel
      * Get encode hash.
      *
      * @param int         $id
-     * @param string      $login
+     * @param string      $slug
      * @param string|null $linkValidate
      * @return string
      */
-    public function getEncodeHash(int $id, string $login, string $linkValidate = null): string
+    public function getEncodeHash(int $id, string $slug, string $linkValidate = null): string
     {
-        return base64_encode(uniqid(($linkValidate ? strtotime($linkValidate) : self::NO_TIME) . '.', true) . '_' . $this->getHash($id . $login) . '.' . $id);
+        return base64_encode(uniqid(($linkValidate ? strtotime($linkValidate) : self::NO_TIME) . '.', true) . '_' . $this->getHash($id . $slug) . '.' . $id);
     }
 
 
