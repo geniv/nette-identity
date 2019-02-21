@@ -9,15 +9,15 @@ $ composer require geniv/nette-identity
 ```
 or
 ```json
-"geniv/nette-identity": ">=1.0.0"
+"geniv/nette-identity": "^1.1"
 ```
 
 require:
 ```json
-"php": ">=7.0.0",
-"nette/nette": ">=2.4.0",
-"dibi/dibi": ">=3.0.0",
-"geniv/nette-general-form": ">=1.0.0"
+"php": ">=7.0",
+"nette/nette": ">=2.4",
+"dibi/dibi": ">=3.0",
+"geniv/nette-general-form": ">=1.0"
 ```
 
 Include in application
