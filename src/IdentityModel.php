@@ -26,6 +26,11 @@ class IdentityModel implements IIdentityModel
         NO_TIME = 'nostrtotime';
 
     const
+        ID_SEPARATOR = '.|.',
+        TIME_SEPARATOR = '.X|.',
+        PART_SEPARATOR = '_|_';
+
+    const
         COLUMN_ID = 'id',
         REQUIRE_COLUMNS = [self::COLUMN_ID, 'login', 'hash', 'role', 'active',];    //id, login, hash, role, active
 
@@ -283,7 +288,7 @@ class IdentityModel implements IIdentityModel
      */
     public function getEncodeHash(int $id, string $slug, string $linkValidate = null): string
     {
-        return base64_encode(uniqid(($linkValidate ? strtotime($linkValidate) : self::NO_TIME) . '.', true) . '_' . $this->getHash($id . $slug) . '.' . $id);
+        return base64_encode(uniqid(($linkValidate ? strtotime($linkValidate) : self::NO_TIME) . self::TIME_SEPARATOR, true) . self::PART_SEPARATOR . $this->getHash($id . $slug) . self::ID_SEPARATOR . $id);
     }
 
 
@@ -296,10 +301,10 @@ class IdentityModel implements IIdentityModel
      */
     public function getDecodeHash(string $hash): array
     {
-        $decode = base64_decode($hash, true);
-        list($part1, $part2) = explode('_', $decode);
+        $decode = base64_decode($hash);
+        list($part1, $part2) = explode(self::PART_SEPARATOR, $decode);
 
-        $p1 = explode('.', $part1);
+        $p1 = explode(self::TIME_SEPARATOR, $part1);
         list($linkValidate,) = $p1; // get validate int
 
         $id = null;
@@ -312,7 +317,7 @@ class IdentityModel implements IIdentityModel
         }
         $dateValidate->setTimestamp((int) $linkValidate);  // convert validate int do datetime
         if ($dateValidate >= $dateNow) {   // check expiration
-            $p2 = explode('.', $part2);
+            $p2 = explode(self::ID_SEPARATOR, $part2);
             $verifyHash = implode('.', array_slice($p2, 0, -1));  // regenerate hash
             $id = $p2[count($p2) - 1];  // get id from last part
         } else {
