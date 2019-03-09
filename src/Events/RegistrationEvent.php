@@ -2,6 +2,7 @@
 
 namespace Identity\Events;
 
+use Exception;
 use GeneralForm\EventException;
 use GeneralForm\IEvent;
 use GeneralForm\IEventContainer;
@@ -46,7 +47,7 @@ class RegistrationEvent implements IEvent
         try {
             $idUser = $this->identityModel->insert($values);
             $eventContainer->addValues(['id_user' => $idUser]);
-        } catch (\Dibi\Exception $e) {
+        } catch (Exception $e) {
             // recall exception
             throw new EventException($e->getMessage());
         }

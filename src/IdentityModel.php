@@ -2,10 +2,10 @@
 
 namespace Identity;
 
+use DateTime;
 use dibi;
 use Dibi\Connection;
 use Dibi\IDataSource;
-use Nette\DateTime;
 use Nette\Security\Passwords;
 use Nette\SmartObject;
 
@@ -117,6 +117,7 @@ class IdentityModel implements IIdentityModel
      */
     public function getById(int $id)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         return $this->getList()
             ->where([self::COLUMN_ID => $id])
             ->fetch();
@@ -132,6 +133,7 @@ class IdentityModel implements IIdentityModel
     public function getByEmail(string $email)
     {
         // get by id and active must by true
+        /** @noinspection PhpUndefinedMethodInspection */
         return $this->getList()
             ->where(['email' => $email, 'active' => true])
             ->fetch();
@@ -253,6 +255,7 @@ class IdentityModel implements IIdentityModel
      * @param string|null $validate
      * @return int
      * @throws \Dibi\Exception
+     * @throws \Exception
      */
     public function cleanUser(string $validate = null): int
     {
@@ -261,6 +264,7 @@ class IdentityModel implements IIdentityModel
             $validateTo = new DateTime;
             $validateTo->modify($validate);
 
+            /** @noinspection PhpUndefinedMethodInspection */
             $list = $this->getList()
                 ->where([
                     'active' => false,
@@ -298,6 +302,7 @@ class IdentityModel implements IIdentityModel
      * @param string $hash
      * @return array
      * @throws IdentityException
+     * @throws \Exception
      */
     public function getDecodeHash(string $hash): array
     {
