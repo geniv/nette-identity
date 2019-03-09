@@ -6,6 +6,8 @@ use GeneralForm\EventException;
 use GeneralForm\IEvent;
 use GeneralForm\IEventContainer;
 use Identity\IIdentityModel;
+use Nette\Application\UI\InvalidLinkException;
+use Nette\Application\UI\Presenter;
 use Nette\SmartObject;
 
 
@@ -68,6 +70,7 @@ class ForgottenStep1Event implements IEvent
      * @param IEventContainer $eventContainer
      * @param array           $values
      * @throws EventException
+     * @throws InvalidLinkException
      */
     public function update(IEventContainer $eventContainer, array $values)
     {
@@ -75,6 +78,7 @@ class ForgottenStep1Event implements IEvent
         if ($user) {
             $hash = $this->identityModel->getEncodeHash($user['id'], $user['login'], $this->validate);
 
+            /** @var Presenter $component */
             $component = $eventContainer->getComponent();
             $eventContainer->addValues($user->toArray());
             $eventContainer->addValues(['approve_link' => $component->presenter->link($this->destination, $hash)]);
