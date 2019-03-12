@@ -2,6 +2,7 @@
 
 namespace Identity\Events;
 
+use Exception;
 use GeneralForm\EventException;
 use GeneralForm\IEvent;
 use GeneralForm\IEventContainer;
@@ -61,7 +62,7 @@ class CleanUserEvent implements IEvent
         try {
             $result = $this->identityModel->cleanUser($this->validate);
             //TODO pridat mozne nastaveni callbacku pro vlastni notifikaci???
-        } catch (\Dibi\Exception $e) {
+        } catch (Exception $e) {
             // recall exception
             throw new EventException($e->getMessage());
         }
