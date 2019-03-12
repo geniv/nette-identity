@@ -37,7 +37,7 @@ class IdentityModel implements IIdentityModel
     /** @var Connection */
     private $connection;
     /** @var string */
-    private $tableIdentity;
+    private $tableName, $tableIdentity;
     /** @var array */
     private $columns = ['id', 'login', 'hash', 'username', 'email', 'role', 'active', 'added'];
 
@@ -46,13 +46,15 @@ class IdentityModel implements IIdentityModel
      * IdentityModel constructor.
      *
      * @param string     $prefix
+     * @param string     $tableName
      * @param Connection $connection
      */
-    public function __construct(string $prefix, Connection $connection)
+    public function __construct(string $prefix, string $tableName = self::TABLE_NAME, Connection $connection)
     {
+        $this->tableName = $tableName;
         $this->connection = $connection;
         // define table names
-        $this->tableIdentity = $prefix . self::TABLE_NAME;
+        $this->tableIdentity = $prefix . $tableName;
     }
 
 
@@ -105,7 +107,10 @@ class IdentityModel implements IIdentityModel
      */
     public function getList(): IDataSource
     {
-        return $this->connection->select($this->columns)->from($this->tableIdentity);
+        $columns = array_map(function ($item) {
+            return $this->tableName[0] . '.' . $item;
+        }, $this->columns);
+        return $this->connection->select($columns)->from($this->tableIdentity)->as($this->tableName[0]);
     }
 
 
@@ -119,7 +124,7 @@ class IdentityModel implements IIdentityModel
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return $this->getList()
-            ->where([self::COLUMN_ID => $id])
+            ->where([$this->tableName[0] . '.' . self::COLUMN_ID => $id])
             ->fetch();
     }
 
@@ -135,7 +140,7 @@ class IdentityModel implements IIdentityModel
         // get by id and active must by true
         /** @noinspection PhpUndefinedMethodInspection */
         return $this->getList()
-            ->where(['email' => $email, 'active' => true])
+            ->where([$this->tableName[0] . '.email' => $email, $this->tableName[0] . '.active' => true])
             ->fetch();
     }
 
@@ -267,9 +272,9 @@ class IdentityModel implements IIdentityModel
             /** @noinspection PhpUndefinedMethodInspection */
             $list = $this->getList()
                 ->where([
-                    'active' => false,
-                    'added IS NOT NULL',
-                    ['added<=%dt', $validateTo],
+                    $this->tableName[0] . '.active' => false,
+                    $this->tableName[0] . '.added IS NOT NULL',
+                    [$this->tableName[0] . '.added<=%dt', $validateTo],
                 ]);
 
             foreach ($list as $item) {
