@@ -5,7 +5,10 @@ namespace Identity;
 use DateTime;
 use dibi;
 use Dibi\Connection;
+use Dibi\Exception as DibiException;
 use Dibi\IDataSource;
+use Dibi\Row;
+use Exception;
 use Nette\Security\Passwords;
 use Nette\SmartObject;
 
@@ -36,8 +39,10 @@ class IdentityModel implements IIdentityModel
 
     /** @var Connection */
     private $connection;
+
     /** @var string */
     private $tableName, $tableIdentity;
+
     /** @var array */
     private $columns = ['id', 'login', 'hash', 'username', 'email', 'role', 'active', 'added'];
 
@@ -118,7 +123,7 @@ class IdentityModel implements IIdentityModel
      * Get by id.
      *
      * @param int $id
-     * @return \Dibi\Row|false
+     * @return Row|false
      */
     public function getById(int $id)
     {
@@ -133,7 +138,7 @@ class IdentityModel implements IIdentityModel
      * Get by email.
      *
      * @param string $email
-     * @return \Dibi\Row|false
+     * @return Row|false
      */
     public function getByEmail(string $email)
     {
@@ -150,13 +155,17 @@ class IdentityModel implements IIdentityModel
      *
      * @param array $values
      * @return int
-     * @throws \Dibi\Exception
+     * @throws DibiException
      */
     public function insert(array $values): int
     {
         $values['added%sql'] = 'NOW()';
-        $values['hash'] = $this->getHash($values['password']);  // auto hash password
-        unset($values['password']);
+        if (isset($values['password'])) {
+            if ($values['password']) {
+                $values['hash'] = $this->getHash($values['password']);  // auto hash password
+            }
+            unset($values['password']);
+        }
 
         $res = $this->connection->insert($this->tableIdentity, $values)->execute(Dibi::IDENTIFIER);
         return $res;
@@ -169,7 +178,7 @@ class IdentityModel implements IIdentityModel
      * @param int   $id
      * @param array $values
      * @return bool
-     * @throws \Dibi\Exception
+     * @throws DibiException
      */
     public function update(int $id, array $values): bool
     {
@@ -190,7 +199,7 @@ class IdentityModel implements IIdentityModel
      *
      * @param int $id
      * @return bool
-     * @throws \Dibi\Exception
+     * @throws DibiException
      */
     public function delete(int $id): bool
     {
@@ -259,8 +268,7 @@ class IdentityModel implements IIdentityModel
      *
      * @param string|null $validate
      * @return int
-     * @throws \Dibi\Exception
-     * @throws \Exception
+     * @throws DibiException
      */
     public function cleanUser(string $validate = null): int
     {
@@ -307,7 +315,7 @@ class IdentityModel implements IIdentityModel
      * @param string $hash
      * @return array
      * @throws IdentityException
-     * @throws \Exception
+     * @throws Exception
      */
     public function getDecodeHash(string $hash): array
     {
@@ -343,7 +351,7 @@ class IdentityModel implements IIdentityModel
      * @param string $hash
      * @return bool
      * @throws IdentityException
-     * @throws \Dibi\Exception
+     * @throws DibiException
      */
     public function processApprove(string $hash): bool
     {
@@ -400,7 +408,7 @@ class IdentityModel implements IIdentityModel
      * @param string $password
      * @return bool
      * @throws IdentityException
-     * @throws \Dibi\Exception
+     * @throws DibiException
      */
     public function processForgotten(string $hash, string $password): bool
     {

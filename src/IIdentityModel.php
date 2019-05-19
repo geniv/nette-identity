@@ -2,7 +2,9 @@
 
 namespace Identity;
 
+use Dibi\Exception;
 use Dibi\IDataSource;
+use Dibi\Row;
 
 
 /**
@@ -53,7 +55,7 @@ interface IIdentityModel
      * Get by id.
      *
      * @param $id
-     * @return \Dibi\Row|false
+     * @return Row|false
      */
     public function getById(int $id);
 
@@ -62,7 +64,7 @@ interface IIdentityModel
      * Get by email.
      *
      * @param string $email
-     * @return \Dibi\Row|false
+     * @return Row|false
      */
     public function getByEmail(string $email);
 
@@ -168,7 +170,7 @@ interface IIdentityModel
      * @param string $hash
      * @return bool
      * @throws IdentityException
-     * @throws \Dibi\Exception
+     * @throws Exception
      */
     public function processApprove(string $hash): bool;
 
@@ -190,7 +192,7 @@ interface IIdentityModel
      * @param string $password
      * @return bool
      * @throws IdentityException
-     * @throws \Dibi\Exception
+     * @throws Exception
      */
     public function processForgotten(string $hash, string $password): bool;
 }
