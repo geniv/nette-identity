@@ -70,6 +70,15 @@ interface IIdentityModel
 
 
     /**
+     * Get insert id.
+     *
+     * @return int
+     * @throws Exception
+     */
+    public function getInsertId(): int;
+
+
+    /**
      * Insert.
      *
      * @param array $values
