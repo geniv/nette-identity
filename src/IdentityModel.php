@@ -151,7 +151,7 @@ class IdentityModel implements IIdentityModel
 
 
     /**
-     * Get insertId.
+     * Get insert id.
      *
      * @return int
      * @throws Exception
