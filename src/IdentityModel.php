@@ -151,6 +151,18 @@ class IdentityModel implements IIdentityModel
 
 
     /**
+     * Get insertId.
+     *
+     * @return int
+     * @throws Exception
+     */
+    public function getInsertId(): int
+    {
+        return $this->connection->getInsertId();
+    }
+
+
+    /**
      * Insert.
      *
      * @param array $values
